@@ -1,0 +1,58 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Navan
+providerId: navan
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Corporate Travel
+- Expense Management
+- Rate Limiting
+- Quotas
+description: >-
+  Navan does not publish fixed numeric rate-limit tiers or thresholds in its
+  public developer documentation. The API is OAuth 2.0 client-credentials over
+  HTTPS; clients should treat rate limiting as present-but-unspecified, handle
+  HTTP 429 responses, implement exponential backoff with jitter, and honor any
+  Retry-After header. For high-volume data extraction (transactions, bookings),
+  prefer cursor-paginated pulls with date filters and, where offered, bulk /
+  report-style retrieval rather than tight polling. Contact Navan support for
+  account-specific limits.
+notes: >-
+  No documented per-minute, per-hour, or per-day request caps as of the review
+  date. OAuth access tokens are short-lived and must be refreshed via the
+  client-credentials token endpoint. Numeric limits, burst allowances, and
+  rate-limit response headers are not publicly disclosed.
+sources:
+- https://developer.navan.com/
+- https://www.stitchflow.com/user-management/navan/api
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests
+  scope: account
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the Navan API.
+- name: Access Token Lifetime
+  scope: credential
+  metric: token
+  limit: short-lived (refresh via client-credentials)
+  notes: Tokens expire and must be re-fetched from the OAuth token endpoint.
+- name: Pagination Page Size
+  scope: endpoint
+  metric: records
+  limit: cursor-based, bounded per page
+  notes: List endpoints use cursor pagination; iterate cursors rather than requesting large pages.
+policies:
+- name: Backoff Strategy
+  description: On HTTP 429, back off exponentially with jitter and honor Retry-After before retrying.
+- name: Cursor Pagination
+  description: Use next_cursor to iterate large result sets (users, transactions, bookings) instead of high-frequency polling.
+- name: Date-Filtered Extraction
+  description: Constrain transaction, fee, receipt, and booking pulls with from/to date filters to reduce volume.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

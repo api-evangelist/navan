@@ -1,0 +1,200 @@
+aid: navan
+url: https://raw.githubusercontent.com/api-evangelist/navan/refs/heads/main/apis.yml
+name: Navan
+kind: company
+description: Navan (formerly TripActions, rebranded to Navan in February 2022) is a
+  corporate travel, expense, and corporate card management platform. Its public
+  developer surface centers on the Navan Expense API (OAuth 2.0 client-credentials)
+  for retrieving and updating transactions, fees, adjustments, receipts, and custom
+  fields, plus a Travel/User Management API for provisioning users and reading
+  booking data, and webhooks for change notifications. Navan also publishes an MCP
+  server for connecting AI assistants to Navan data. Booking (travel) is offered at
+  no platform cost and funded by supplier commissions and per-trip fees, while
+  Expense is a per-user subscription.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Corporate Travel
+- Expense Management
+- Corporate Cards
+- Spend Management
+- T&E
+- Fintech
+- Business Travel
+created: '2026-07-03'
+modified: '2026-07-03'
+specificationVersion: '0.19'
+apis:
+- aid: navan:navan-expense-transactions-api
+  name: Navan Expense Transactions API
+  tags:
+  - Expenses
+  - Transactions
+  - Corporate Cards
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/v1/expense
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: https://developer.navan.com/api/
+    type: APIReference
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: Retrieve and update expense transactions across Navan card transactions,
+    Connect (external card) transactions, manual/payroll submissions, and repayments.
+    Supports a generic multi-type list, single-transaction lookup by ID, and batch
+    updates. Endpoints confirmed against the Navan Expense API reference.
+- aid: navan:navan-expense-fees-adjustments-api
+  name: Navan Expense Fees and Adjustments API
+  tags:
+  - Expenses
+  - Fees
+  - Adjustments
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/v1/expense
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: Read direct-reimbursement, FX, and platform fees, credit and debit
+    memo adjustments, daily rebates, and dispute transactions on the Navan Expense
+    surface. Endpoints confirmed against the Navan Expense API reference.
+- aid: navan:navan-expense-receipts-api
+  name: Navan Expense Receipts API
+  tags:
+  - Receipts
+  - Expenses
+  - Documents
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/v1/expense
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: Retrieve receipt image URLs for a given transaction, follow a download
+    redirect to the receipt file, and batch-fetch receipt URLs across transactions by
+    date filter. Endpoints confirmed against the Navan Expense API reference.
+- aid: navan:navan-expense-custom-fields-api
+  name: Navan Expense Custom Fields API
+  tags:
+  - Custom Fields
+  - Cost Centers
+  - Configuration
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/v1/expense
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: List company custom fields (the mechanism Navan uses for cost-center,
+    department, and GL coding), read a single field definition, batch-manage a field's
+    options, and poll asynchronous option-management jobs. Endpoints confirmed against
+    the Navan Expense API reference.
+- aid: navan:navan-users-api
+  name: Navan Users API
+  tags:
+  - Users
+  - User Management
+  - SCIM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/travel/v1
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: List, retrieve, create, update, and deactivate Navan users under the
+    travel/v1 surface with cursor-based pagination and users:read / users:write /
+    users:delete scopes. Deactivation is a soft delete. Endpoints confirmed against
+    third-party user-management integration documentation.
+- aid: navan:navan-bookings-api
+  name: Navan Bookings API
+  tags:
+  - Bookings
+  - Trips
+  - Travel
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://app.navan.com/app/helpcenter/articles/travel/admin/other-integrations/booking-data-integration
+  baseURL: https://api.navan.com/travel/v1
+  properties:
+  - url: https://app.navan.com/app/helpcenter/articles/travel/admin/other-integrations/booking-data-integration
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: Read booking (trip) records so travel data can be transferred to
+    downstream ERP, data-warehouse, and reporting systems, mirroring the columns of
+    Navan's booking report. The bookings:read scope is confirmed; the exact endpoint
+    paths are modeled from Navan's booking-data integration documentation because the
+    full reference is gated.
+- aid: navan:navan-webhooks-api
+  name: Navan Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.navan.com/api/
+  baseURL: https://api.navan.com/v1/expense
+  properties:
+  - url: https://developer.navan.com/api/
+    type: Documentation
+  - url: openapi/navan-openapi.yml
+    type: OpenAPI
+  - url: collections/navan.postman_collection.json
+    type: PostmanCollection
+  - url: collections/navan.opencollection.json
+    type: OpenCollection
+  description: Register and manage webhook subscriptions so Navan can POST change
+    notifications (for example transaction and expense events) to your endpoint. The
+    Navan Expense API advertises webhooks as a first-class feature; the subscription
+    management endpoint paths are modeled because the detailed webhook reference is
+    gated. There is no public WebSocket API - server-push is delivered via webhooks.
+common:
+- type: GitHubOrganization
+  url: https://github.com/navan-public
+- type: LinkedIn
+  url: https://www.linkedin.com/company/navan
+- type: Website
+  url: https://navan.com
+- type: Documentation
+  url: https://developer.navan.com/
+- type: Plans
+  url: plans/navan-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/navan-rate-limits.yml
+- type: FinOps
+  url: finops/navan-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

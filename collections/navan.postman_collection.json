@@ -1,0 +1,320 @@
+{
+  "info": {
+    "name": "Navan API",
+    "description": "Navan (formerly TripActions) corporate travel, expense, and corporate card API. REST/HTTPS secured with OAuth 2.0 client-credentials; call with Authorization: Bearer <token>. Expense (v1/expense) and Users (travel/v1) endpoints are confirmed against Navan's reference; Bookings and Webhook subscription-management endpoints are modeled. Base URL: https://api.navan.com. Token URL: https://app.navan.com/ta-auth/oauth/token (EU: https://app-fra.navan.com/ta-auth/oauth/token).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{bearerToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.navan.com", "type": "string" },
+    { "key": "bearerToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Transactions (confirmed)",
+      "item": [
+        {
+          "name": "List transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions?from=&to=", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions"], "query": [{ "key": "from", "value": "" }, { "key": "to", "value": "" }] },
+            "description": "Generic multi-type retrieval of expense transactions."
+          }
+        },
+        {
+          "name": "Get a transaction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions/:id", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions",":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Retrieve a single transaction by ID."
+          }
+        },
+        {
+          "name": "Batch update transactions",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"transactions\": [\n    { \"id\": \"\", \"customFieldValues\": {} }\n  ]\n}" },
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions"] },
+            "description": "Batch-update a set of transactions."
+          }
+        },
+        {
+          "name": "List Navan card transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/card-transactions", "host": ["{{baseUrl}}"], "path": ["v1","expense","card-transactions"] },
+            "description": "Transactions on Navan-issued corporate cards."
+          }
+        },
+        {
+          "name": "List Connect card transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/connect-transactions", "host": ["{{baseUrl}}"], "path": ["v1","expense","connect-transactions"] },
+            "description": "Transactions from Navan Connect external card integrations."
+          }
+        },
+        {
+          "name": "List manual transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/manual-transactions", "host": ["{{baseUrl}}"], "path": ["v1","expense","manual-transactions"] },
+            "description": "Manual submissions and payroll transactions."
+          }
+        },
+        {
+          "name": "List repayments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/repayments", "host": ["{{baseUrl}}"], "path": ["v1","expense","repayments"] },
+            "description": "User repayment transactions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fees and Adjustments (confirmed)",
+      "item": [
+        {
+          "name": "List fees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/fees", "host": ["{{baseUrl}}"], "path": ["v1","expense","fees"] },
+            "description": "Direct-reimbursement, FX, and platform fees."
+          }
+        },
+        {
+          "name": "List adjustments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/adjustments", "host": ["{{baseUrl}}"], "path": ["v1","expense","adjustments"] },
+            "description": "Credit and debit memo adjustments."
+          }
+        },
+        {
+          "name": "List daily rebates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/daily-rebates", "host": ["{{baseUrl}}"], "path": ["v1","expense","daily-rebates"] },
+            "description": "Daily rebate transactions."
+          }
+        },
+        {
+          "name": "List disputes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/disputes", "host": ["{{baseUrl}}"], "path": ["v1","expense","disputes"] },
+            "description": "Dispute transactions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receipts (confirmed)",
+      "item": [
+        {
+          "name": "Get receipt URLs for a transaction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions/:id/receipt", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions",":id","receipt"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Receipt image URLs for a given transaction."
+          }
+        },
+        {
+          "name": "Download a transaction receipt",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions/:id/receipt/download", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions",":id","receipt","download"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Redirect to download the receipt file for a transaction."
+          }
+        },
+        {
+          "name": "Batch list receipt URLs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/transactions/receipts?from=&to=", "host": ["{{baseUrl}}"], "path": ["v1","expense","transactions","receipts"], "query": [{ "key": "from", "value": "" }, { "key": "to", "value": "" }] },
+            "description": "Batch-fetch receipt URLs across transactions by date filter."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Custom Fields (confirmed)",
+      "item": [
+        {
+          "name": "List custom fields",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/custom-fields", "host": ["{{baseUrl}}"], "path": ["v1","expense","custom-fields"] },
+            "description": "List all company custom fields."
+          }
+        },
+        {
+          "name": "Get a custom field",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/custom-fields/:fieldName", "host": ["{{baseUrl}}"], "path": ["v1","expense","custom-fields",":fieldName"], "variable": [{ "key": "fieldName", "value": "" }] },
+            "description": "Retrieve a single custom field definition."
+          }
+        },
+        {
+          "name": "Batch manage custom field options",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"options\": [\n    { \"value\": \"\", \"action\": \"add\" }\n  ]\n}" },
+            "url": { "raw": "{{baseUrl}}/v1/expense/custom-fields/:fieldName/options", "host": ["{{baseUrl}}"], "path": ["v1","expense","custom-fields",":fieldName","options"], "variable": [{ "key": "fieldName", "value": "" }] },
+            "description": "Batch-create or update the options available on a custom field."
+          }
+        },
+        {
+          "name": "Get custom field job status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/custom-fields/jobs/:job_id", "host": ["{{baseUrl}}"], "path": ["v1","expense","custom-fields","jobs",":job_id"], "variable": [{ "key": "job_id", "value": "" }] },
+            "description": "Poll the status of an asynchronous custom-field options job."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (confirmed)",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/travel/v1/users?page_size=50", "host": ["{{baseUrl}}"], "path": ["travel","v1","users"], "query": [{ "key": "page_size", "value": "50" }] },
+            "description": "List users with cursor-based pagination. Requires users:read."
+          }
+        },
+        {
+          "name": "Create a user",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"\",\n  \"givenName\": \"\",\n  \"familyName\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/travel/v1/users", "host": ["{{baseUrl}}"], "path": ["travel","v1","users"] },
+            "description": "Create a new user. Requires users:write."
+          }
+        },
+        {
+          "name": "Get a user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/travel/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["travel","v1","users",":userId"], "variable": [{ "key": "userId", "value": "" }] },
+            "description": "Retrieve a user by ID. Requires users:read."
+          }
+        },
+        {
+          "name": "Update a user",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/travel/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["travel","v1","users",":userId"], "variable": [{ "key": "userId", "value": "" }] },
+            "description": "Update a user record. Requires users:write."
+          }
+        },
+        {
+          "name": "Deactivate a user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/travel/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["travel","v1","users",":userId"], "variable": [{ "key": "userId", "value": "" }] },
+            "description": "Soft-delete (deactivate) a user. Requires users:delete."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings (modeled)",
+      "item": [
+        {
+          "name": "List bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/travel/v1/bookings?from=&to=", "host": ["{{baseUrl}}"], "path": ["travel","v1","bookings"], "query": [{ "key": "from", "value": "" }, { "key": "to", "value": "" }] },
+            "description": "MODELED. List booking (trip) records. bookings:read confirmed; path modeled from Navan booking-data integration docs."
+          }
+        },
+        {
+          "name": "Get a booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/travel/v1/bookings/:bookingId", "host": ["{{baseUrl}}"], "path": ["travel","v1","bookings",":bookingId"], "variable": [{ "key": "bookingId", "value": "" }] },
+            "description": "MODELED. Retrieve a single booking by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks (modeled)",
+      "item": [
+        {
+          "name": "List webhook subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/webhooks", "host": ["{{baseUrl}}"], "path": ["v1","expense","webhooks"] },
+            "description": "MODELED. List configured webhook subscriptions."
+          }
+        },
+        {
+          "name": "Create a webhook subscription",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"url\": \"\",\n  \"events\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/v1/expense/webhooks", "host": ["{{baseUrl}}"], "path": ["v1","expense","webhooks"] },
+            "description": "MODELED. Register a webhook endpoint for change notifications."
+          }
+        },
+        {
+          "name": "Get a webhook subscription",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/webhooks/:id", "host": ["{{baseUrl}}"], "path": ["v1","expense","webhooks",":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "MODELED. Retrieve a webhook subscription by ID."
+          }
+        },
+        {
+          "name": "Delete a webhook subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/expense/webhooks/:id", "host": ["{{baseUrl}}"], "path": ["v1","expense","webhooks",":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "MODELED. Delete a webhook subscription."
+          }
+        }
+      ]
+    }
+  ]
+}

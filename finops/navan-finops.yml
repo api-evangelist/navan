@@ -1,0 +1,105 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Navan
+providerId: navan
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Corporate Travel
+- Expense Management
+- Corporate Cards
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Navan (formerly TripActions) spend. Navan is a SaaS travel,
+  expense, and corporate card platform rather than a metered API product, so
+  spend is driven by the underlying subscription and travel activity, not by API
+  call volume. The dominant cost drivers are: per-user Expense subscription
+  seats (approx $15/user/month), per-trip travel booking/service fees (Business
+  Travel has no platform fee and is funded by supplier commissions plus booking
+  fees), corporate-card program economics (interchange, FX, rebates), and any
+  Enterprise agreement for unified T&E. The developer API itself is included
+  with the subscription and does not carry a separate per-call charge; it is
+  primarily a lever for spend visibility and reconciliation rather than a cost.
+notes: >-
+  Per-user rates, free-user thresholds, and booking-fee schedules are
+  contract-specific and not reconciled here. The API is a FinOps enabler:
+  pulling card, Connect, manual, fee, adjustment, rebate, and dispute
+  transactions plus booking data lets finance teams allocate T&E spend to cost
+  centers via custom fields.
+sources:
+- https://navan.com/pricing
+- https://developer.navan.com/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Navan
+serviceCategory: Travel and Expense Management
+billingModel:
+  pricingCategory: Subscription
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Navan
+  ServiceCategory: Travel and Expense Management
+  ProviderName: Navan
+  PublisherName: Navan
+  InvoiceIssuerName: Navan
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription
+meters:
+- name: expense_user_seats
+  description: Active Expense users billed per user per month.
+  unit: users
+  aggregation: max
+  dimensions:
+  - account
+  - department
+  - costCenter
+- name: booking_fees
+  description: Per-trip booking / service fees on travel reservations.
+  unit: bookings
+  aggregation: sum
+  dimensions:
+  - account
+  - travelerId
+  - bookingType
+- name: card_spend
+  description: Corporate card transaction volume settled through Navan cards and Connect.
+  unit: currency
+  aggregation: sum
+  dimensions:
+  - account
+  - userId
+  - customField
+- name: fees_and_adjustments
+  description: Platform, FX, and reimbursement fees plus credit/debit adjustments, rebates, and disputes.
+  unit: currency
+  aggregation: sum
+  dimensions:
+  - account
+  - feeType
+principles:
+- name: Visibility
+  description: Pull card, Connect, manual, fee, adjustment, rebate, and dispute transactions plus booking data via the API to see all T&E spend in one place.
+- name: Allocation
+  description: Use custom fields (cost center, department, GL) to map every transaction and booking to an internal owner.
+- name: Optimization
+  description: Enforce travel policy at booking, consolidate cards through Navan, and reconcile expenses automatically to cut leakage and manual effort.
+- name: Accountability
+  description: Assign expense owners and managers per user; review per-cost-center spend monthly against budget.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

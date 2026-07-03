@@ -1,0 +1,258 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Navan API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Transactions (confirmed)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List transactions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/transactions?from=&to=" },
+          "docs": "Generic multi-type retrieval of expense transactions."
+        },
+        {
+          "info": { "name": "Get a transaction.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/transactions/:id",
+            "params": [ { "name": "id", "value": "", "type": "path", "description": "The transaction ID." } ]
+          },
+          "docs": "Retrieve a single transaction by ID."
+        },
+        {
+          "info": { "name": "Batch update transactions.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.navan.com/v1/expense/transactions",
+            "body": { "type": "json", "data": "{\n  \"transactions\": [\n    { \"id\": \"\", \"customFieldValues\": {} }\n  ]\n}" }
+          },
+          "docs": "Batch-update a set of transactions."
+        },
+        {
+          "info": { "name": "List Navan card transactions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/card-transactions" },
+          "docs": "Transactions on Navan-issued corporate cards."
+        },
+        {
+          "info": { "name": "List Connect card transactions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/connect-transactions" },
+          "docs": "Transactions from Navan Connect external card integrations."
+        },
+        {
+          "info": { "name": "List manual transactions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/manual-transactions" },
+          "docs": "Manual submissions and payroll transactions."
+        },
+        {
+          "info": { "name": "List repayments.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/repayments" },
+          "docs": "User repayment transactions."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Fees and Adjustments (confirmed)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List fees.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/fees" },
+          "docs": "Direct-reimbursement, FX, and platform fees."
+        },
+        {
+          "info": { "name": "List adjustments.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/adjustments" },
+          "docs": "Credit and debit memo adjustments."
+        },
+        {
+          "info": { "name": "List daily rebates.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/daily-rebates" },
+          "docs": "Daily rebate transactions."
+        },
+        {
+          "info": { "name": "List disputes.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/disputes" },
+          "docs": "Dispute transactions."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Receipts (confirmed)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get receipt URLs for a transaction.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/transactions/:id/receipt",
+            "params": [ { "name": "id", "value": "", "type": "path", "description": "The transaction ID." } ]
+          },
+          "docs": "Receipt image URLs for a given transaction."
+        },
+        {
+          "info": { "name": "Download a transaction receipt.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/transactions/:id/receipt/download",
+            "params": [ { "name": "id", "value": "", "type": "path", "description": "The transaction ID." } ]
+          },
+          "docs": "Redirect to download the receipt file for a transaction."
+        },
+        {
+          "info": { "name": "Batch list receipt URLs.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/transactions/receipts?from=&to=" },
+          "docs": "Batch-fetch receipt URLs across transactions by date filter."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Custom Fields (confirmed)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List custom fields.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/custom-fields" },
+          "docs": "List all company custom fields."
+        },
+        {
+          "info": { "name": "Get a custom field.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/custom-fields/:fieldName",
+            "params": [ { "name": "fieldName", "value": "", "type": "path", "description": "The custom field name." } ]
+          },
+          "docs": "Retrieve a single custom field definition."
+        },
+        {
+          "info": { "name": "Batch manage custom field options.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.navan.com/v1/expense/custom-fields/:fieldName/options",
+            "params": [ { "name": "fieldName", "value": "", "type": "path", "description": "The custom field name." } ],
+            "body": { "type": "json", "data": "{\n  \"options\": [\n    { \"value\": \"\", \"action\": \"add\" }\n  ]\n}" }
+          },
+          "docs": "Batch-create or update the options available on a custom field."
+        },
+        {
+          "info": { "name": "Get custom field job status.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/custom-fields/jobs/:job_id",
+            "params": [ { "name": "job_id", "value": "", "type": "path", "description": "The async job ID." } ]
+          },
+          "docs": "Poll the status of an asynchronous custom-field options job."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Users (confirmed)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List users.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/travel/v1/users?page_size=50" },
+          "docs": "List users with cursor-based pagination. Requires users:read."
+        },
+        {
+          "info": { "name": "Create a user.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.navan.com/travel/v1/users",
+            "body": { "type": "json", "data": "{\n  \"email\": \"\",\n  \"givenName\": \"\",\n  \"familyName\": \"\"\n}" }
+          },
+          "docs": "Create a new user. Requires users:write."
+        },
+        {
+          "info": { "name": "Get a user.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/travel/v1/users/:userId",
+            "params": [ { "name": "userId", "value": "", "type": "path", "description": "The user ID." } ]
+          },
+          "docs": "Retrieve a user by ID. Requires users:read."
+        },
+        {
+          "info": { "name": "Update a user.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.navan.com/travel/v1/users/:userId",
+            "params": [ { "name": "userId", "value": "", "type": "path", "description": "The user ID." } ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Update a user record. Requires users:write."
+        },
+        {
+          "info": { "name": "Deactivate a user.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.navan.com/travel/v1/users/:userId",
+            "params": [ { "name": "userId", "value": "", "type": "path", "description": "The user ID." } ]
+          },
+          "docs": "Soft-delete (deactivate) a user. Requires users:delete."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Bookings (modeled)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List bookings.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/travel/v1/bookings?from=&to=" },
+          "docs": "MODELED. List booking (trip) records. bookings:read scope confirmed; path modeled from Navan's booking-data integration docs."
+        },
+        {
+          "info": { "name": "Get a booking.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/travel/v1/bookings/:bookingId",
+            "params": [ { "name": "bookingId", "value": "", "type": "path", "description": "The booking (trip) ID." } ]
+          },
+          "docs": "MODELED. Retrieve a single booking by ID."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks (modeled)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List webhook subscriptions.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.navan.com/v1/expense/webhooks" },
+          "docs": "MODELED. List configured webhook subscriptions."
+        },
+        {
+          "info": { "name": "Create a webhook subscription.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.navan.com/v1/expense/webhooks",
+            "body": { "type": "json", "data": "{\n  \"url\": \"\",\n  \"events\": []\n}" }
+          },
+          "docs": "MODELED. Register a webhook endpoint for change notifications."
+        },
+        {
+          "info": { "name": "Get a webhook subscription.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/webhooks/:id",
+            "params": [ { "name": "id", "value": "", "type": "path", "description": "The webhook subscription ID." } ]
+          },
+          "docs": "MODELED. Retrieve a webhook subscription by ID."
+        },
+        {
+          "info": { "name": "Delete a webhook subscription.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.navan.com/v1/expense/webhooks/:id",
+            "params": [ { "name": "id", "value": "", "type": "path", "description": "The webhook subscription ID." } ]
+          },
+          "docs": "MODELED. Delete a webhook subscription."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

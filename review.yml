@@ -1,0 +1,124 @@
+aid: navan
+name: Navan
+review:
+  question: Does Navan expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-03'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Navan's public developer surface is
+    request/response REST over HTTPS, secured with OAuth 2.0 client-credentials.
+    The only server-push mechanism Navan documents is outbound webhooks, where
+    Navan POSTs change notifications to a customer-configured HTTP endpoint -
+    that is server-to-endpoint HTTP, not a WebSocket (wss://) or an SSE stream
+    on Navan's own API, so there is no server-push transport on Navan's API to
+    model as AsyncAPI.
+findings:
+  summary: |
+    Navan does not publish a documented public WebSocket API. Navan (formerly
+    TripActions, rebranded February 2022) is a corporate travel, expense, and
+    corporate card platform. Its public API is REST over HTTPS under
+    https://api.navan.com, authenticated with OAuth 2.0 client-credentials
+    (Authorization: Bearer <token>). The Expense API (base
+    https://api.navan.com/v1/expense) exposes transactions, fees, adjustments,
+    receipts, and custom fields; the Users API (base
+    https://api.navan.com/travel/v1) provisions users; booking data is available
+    for downstream transfer under the bookings:read scope. Real-time change
+    delivery is handled by outbound webhooks, not a WebSocket. No realtime,
+    bidirectional, or streaming WebSocket (ws:// or wss://) endpoint is
+    documented anywhere in Navan's developer portal as of the review date.
+  rebrandNote: |
+    Navan was named TripActions until its February 2022 rebrand to Navan. Legacy
+    TripActions naming survives in some infrastructure paths, most visibly the
+    OAuth token path `ta-auth` (TripActions auth), e.g.
+    https://app.navan.com/ta-auth/oauth/token.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.navan.com
+      documented: true
+      note: OAuth 2.0 client-credentials. Expense API under /v1/expense; Users/Travel under /travel/v1.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: Navan POSTs change notifications to a customer-configured HTTP endpoint. Server-to-endpoint HTTP, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Navan's developer portal or API reference as of the review date.
+  endpointsConfirmedRest:
+    - GET    https://api.navan.com/v1/expense/transactions
+    - GET    https://api.navan.com/v1/expense/transactions/{id}
+    - PATCH  https://api.navan.com/v1/expense/transactions
+    - GET    https://api.navan.com/v1/expense/card-transactions
+    - GET    https://api.navan.com/v1/expense/connect-transactions
+    - GET    https://api.navan.com/v1/expense/manual-transactions
+    - GET    https://api.navan.com/v1/expense/repayments
+    - GET    https://api.navan.com/v1/expense/fees
+    - GET    https://api.navan.com/v1/expense/adjustments
+    - GET    https://api.navan.com/v1/expense/daily-rebates
+    - GET    https://api.navan.com/v1/expense/disputes
+    - GET    https://api.navan.com/v1/expense/transactions/{id}/receipt
+    - GET    https://api.navan.com/v1/expense/transactions/{id}/receipt/download
+    - GET    https://api.navan.com/v1/expense/transactions/receipts
+    - GET    https://api.navan.com/v1/expense/custom-fields
+    - GET    https://api.navan.com/v1/expense/custom-fields/{fieldName}
+    - POST   https://api.navan.com/v1/expense/custom-fields/{fieldName}/options
+    - GET    https://api.navan.com/v1/expense/custom-fields/jobs/{job_id}
+    - GET    https://api.navan.com/travel/v1/users
+    - POST   https://api.navan.com/travel/v1/users
+    - GET    https://api.navan.com/travel/v1/users/{userId}
+    - PATCH  https://api.navan.com/travel/v1/users/{userId}
+    - DELETE https://api.navan.com/travel/v1/users/{userId}
+  endpointsModeledRest:
+    - GET    https://api.navan.com/travel/v1/bookings
+    - GET    https://api.navan.com/travel/v1/bookings/{bookingId}
+    - GET    https://api.navan.com/v1/expense/webhooks
+    - POST   https://api.navan.com/v1/expense/webhooks
+    - GET    https://api.navan.com/v1/expense/webhooks/{id}
+    - DELETE https://api.navan.com/v1/expense/webhooks/{id}
+  auth:
+    type: OAuth 2.0 client-credentials
+    tokenUrl: https://app.navan.com/ta-auth/oauth/token
+    tokenUrlEU: https://app-fra.navan.com/ta-auth/oauth/token
+    scopes:
+      - bookings:read
+      - users:read
+      - users:write
+      - users:delete
+      - liquid:read
+      - liquid:write
+    note: |
+      Different Navan integration guides cite slightly different token paths
+      (app.navan.com/ta-auth/oauth/token, api.navan.com/ta-auth/oauth/token, and
+      api.navan.com/auth/v1/token). The ta-auth path reflects the TripActions
+      legacy naming. Confirm the current token URL in the Navan developer portal.
+sources:
+  - url: https://developer.navan.com/
+    type: Documentation
+    note: Developer portal; advertises the Navan Expense API (OAuth 2.0 client-credentials, transactions, custom fields, receipts, webhooks) and an MCP server. All REST; no WebSocket.
+  - url: https://developer.navan.com/api/
+    type: APIReference
+    note: Expense API reference - transactions, card/connect/manual transactions, repayments, fees, adjustments, daily-rebates, disputes, receipts, custom-fields. Confirmed endpoints.
+  - url: https://www.stitchflow.com/user-management/navan/api
+    type: APIReference
+    note: Third-party guide documenting travel/v1 user management endpoints, scopes (users:read/write/delete), cursor pagination, and OAuth token exchange.
+  - url: https://app.navan.com/app/helpcenter/articles/travel/admin/other-integrations/booking-data-integration
+    type: Documentation
+    note: Booking data available via API for downstream transfer; basis for the modeled bookings endpoints and bookings:read scope.
+  - url: https://navan.com/pricing
+    type: Pricing
+    note: Business Travel (no platform fee), Business Expense (per user), Enterprise (custom). No public list pricing; contact sales.
+  - url: https://apitracker.io/a/navan
+    type: Documentation
+    note: Profile confirming OpenAPI/Swagger, webhooks, sandbox, OAuth; notes TripActions rebrand and business-travel category.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Navan's own public API is
+    request/response REST (Expense API and Travel/Users API) secured with OAuth
+    2.0 client-credentials. Server-push is delivered by outbound webhooks
+    (Navan POSTs to a customer endpoint), which is not a WebSocket or an SSE
+    stream on Navan's API, so no AsyncAPI document was created.
