@@ -1,0 +1,22 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/navan-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: oauth2ClientCredentials
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://app.navan.com/ta-auth/oauth/token
+    scopes: 6
+  description: 'OAuth 2.0 client-credentials flow. Generate a client_id / client_secret in the
+    Navan app under Settings > Integrations (API), then POST grant_type=client_credentials to
+    the token URL to obtain a Bearer access token. US token URL: https://app.navan.com/ta-auth/oauth/token
+    ; EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some integrations reference
+    an https://api.navan.com/ta-auth/oa'
+  sources:
+  - openapi/navan-openapi.yml
