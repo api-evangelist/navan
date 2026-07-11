@@ -181,6 +181,8 @@ apis:
     management endpoint paths are modeled because the detailed webhook reference is
     gated. There is no public WebSocket API - server-push is delivered via webhooks.
 common:
+- type: OAuthScopes
+  url: scopes/navan-scopes.yml
 - type: GitHubOrganization
   url: https://github.com/navan-public
 - type: LinkedIn
@@ -195,6 +197,8 @@ common:
   url: rate-limits/navan-rate-limits.yml
 - type: FinOps
   url: finops/navan-finops.yml
+- type: Blog
+  url: https://navan.com/blog/rss.xml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

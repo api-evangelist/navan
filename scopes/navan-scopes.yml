@@ -1,0 +1,52 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/navan-openapi.yml
+schemes:
+- name: oauth2ClientCredentials
+  source: openapi/navan-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://app.navan.com/ta-auth/oauth/token
+  description: 'OAuth 2.0 client-credentials flow. Generate a client_id / client_secret in the
+    Navan app under Settings > Integrations (API), then POST grant_type=client_credentials to
+    the token URL to obtain a Bearer access token. US token URL: https://app.navan.com/ta-auth/oauth/token
+    ; EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some integrations reference
+    an https://api.navan.com/ta-auth/oauth/token or /auth/v1/token variant; confirm the current
+    token URL in the Navan developer portal.)'
+scopes:
+- scope: bookings:read
+  description: Read booking (trip) data.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
+- scope: liquid:read
+  description: Read expense data (transactions, fees, receipts, custom fields).
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
+- scope: liquid:write
+  description: Update expense data.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
+- scope: users:delete
+  description: Deactivate users.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
+- scope: users:read
+  description: Read user profiles.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
+- scope: users:write
+  description: Create and modify users.
+  flows:
+  - clientCredentials
+  sources:
+  - openapi/navan-openapi.yml
