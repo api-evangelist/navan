@@ -181,6 +181,8 @@ apis:
     management endpoint paths are modeled because the detailed webhook reference is
     gated. There is no public WebSocket API - server-push is delivered via webhooks.
 common:
+- type: AgenticAccess
+  url: agentic-access/navan-agentic-access.yml
 - type: TrustCenter
   url: security/navan-trust-center.yml
 - type: DomainSecurity
