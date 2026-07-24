@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: Navan Bookings Transactions API
+  description: 'The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform. It is a REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant. Administrators generate a client_id / client_secret in the Navan app under Settings > Integrations (API), exchange them for a Bearer access token, and call the API with `Authorization: Bearer <token>`. Access is scoped (e.g. bookings:read, users:read, users:write, users:delete, and the expense read/write scopes).
+
+
+    Endpoint status: the Expense API paths (transactions, fees, adjustments, receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against Navan''s published API reference and third-party integration guides. The Bookings and Webhook subscription-management paths are MODELED - the relevant scopes and capabilities are documented by Navan, but the exact request paths are behind a gated reference and are represented here as a best-effort model. Modeled operations are flagged with `x-endpoint-status: modeled`.'
+  version: '1.0'
+  contact:
+    name: Navan Developers
+    url: https://developer.navan.com/
+  x-rebrand-note: Navan was known as TripActions until its February 2022 rebrand to Navan; some legacy hostnames and token paths still carry a `ta-` (TripActions) prefix, e.g. the `ta-auth` OAuth token path.
+servers:
+- url: https://api.navan.com
+  description: Navan API (US / global)
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Transactions
+  description: Expense transactions across Navan card, Connect, manual, and repayment types. CONFIRMED.
+paths:
+  /v1/expense/transactions:
+    get:
+      operationId: listTransactions
+      tags:
+      - Transactions
+      summary: List transactions
+      description: Generic multi-type retrieval of expense transactions. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/FromDate'
+      - $ref: '#/components/parameters/ToDate'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      operationId: updateTransactions
+      tags:
+      - Transactions
+      summary: Batch update transactions
+      description: Batch-update a set of transactions (for example custom-field coding). CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionBatchUpdate'
+      responses:
+        '200':
+          description: Update result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/expense/transactions/{id}:
+    parameters:
+    - $ref: '#/components/parameters/TransactionId'
+    get:
+      operationId: getTransaction
+      tags:
+      - Transactions
+      summary: Get a transaction
+      description: Retrieve a single transaction by its ID. CONFIRMED.
+      responses:
+        '200':
+          description: The requested transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/card-transactions:
+    get:
+      operationId: listCardTransactions
+      tags:
+      - Transactions
+      summary: List Navan card transactions
+      description: Retrieve transactions made on Navan-issued corporate cards. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/FromDate'
+      - $ref: '#/components/parameters/ToDate'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of card transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/connect-transactions:
+    get:
+      operationId: listConnectTransactions
+      tags:
+      - Transactions
+      summary: List Connect card transactions
+      description: Retrieve transactions from Navan Connect external card integrations. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/FromDate'
+      - $ref: '#/components/parameters/ToDate'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of Connect transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/manual-transactions:
+    get:
+      operationId: listManualTransactions
+      tags:
+      - Transactions
+      summary: List manual transactions
+      description: Retrieve manual submissions and payroll transactions. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/FromDate'
+      - $ref: '#/components/parameters/ToDate'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of manual transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/repayments:
+    get:
+      operationId: listRepayments
+      tags:
+      - Transactions
+      summary: List repayments
+      description: Retrieve user repayment transactions. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/FromDate'
+      - $ref: '#/components/parameters/ToDate'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of repayments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type: string
+          nullable: true
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: The transaction type (card, connect, manual, repayment, fee, adjustment, rebate, dispute).
+        status:
+          type: string
+        merchant:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        date:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    TransactionBatchUpdate:
+      type: object
+      required:
+      - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              customFieldValues:
+                type: object
+                additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client-credentials flow. Generate a client_id / client_secret in the Navan app under Settings > Integrations (API), then POST grant_type=client_credentials to the token URL to obtain a Bearer access token. US token URL: https://app.navan.com/ta-auth/oauth/token ; EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some integrations reference an https://api.navan.com/ta-auth/oauth/token or /auth/v1/token variant; confirm the current token URL in the Navan developer portal.)'
+      flows:
+        clientCredentials:
+          tokenUrl: https://app.navan.com/ta-auth/oauth/token
+          scopes:
+            bookings:read: Read booking (trip) data.
+            users:read: Read user profiles.
+            users:write: Create and modify users.
+            users:delete: Deactivate users.
+            liquid:read: Read expense data (transactions, fees, receipts, custom fields).
+            liquid:write: Update expense data.

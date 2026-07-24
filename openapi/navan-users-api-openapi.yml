@@ -1,0 +1,243 @@
+openapi: 3.0.3
+info:
+  title: Navan Bookings Users API
+  description: 'The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform. It is a REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant. Administrators generate a client_id / client_secret in the Navan app under Settings > Integrations (API), exchange them for a Bearer access token, and call the API with `Authorization: Bearer <token>`. Access is scoped (e.g. bookings:read, users:read, users:write, users:delete, and the expense read/write scopes).
+
+
+    Endpoint status: the Expense API paths (transactions, fees, adjustments, receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against Navan''s published API reference and third-party integration guides. The Bookings and Webhook subscription-management paths are MODELED - the relevant scopes and capabilities are documented by Navan, but the exact request paths are behind a gated reference and are represented here as a best-effort model. Modeled operations are flagged with `x-endpoint-status: modeled`.'
+  version: '1.0'
+  contact:
+    name: Navan Developers
+    url: https://developer.navan.com/
+  x-rebrand-note: Navan was known as TripActions until its February 2022 rebrand to Navan; some legacy hostnames and token paths still carry a `ta-` (TripActions) prefix, e.g. the `ta-auth` OAuth token path.
+servers:
+- url: https://api.navan.com
+  description: Navan API (US / global)
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Users
+  description: User provisioning and lifecycle under travel/v1. CONFIRMED.
+paths:
+  /travel/v1/users:
+    get:
+      operationId: listUsers
+      tags:
+      - Users
+      summary: List users
+      description: List users with cursor-based pagination. Requires users:read. CONFIRMED.
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createUser
+      tags:
+      - Users
+      summary: Create a user
+      description: Create a new user. Requires users:write. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: The created user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /travel/v1/users/{userId}:
+    parameters:
+    - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getUser
+      tags:
+      - Users
+      summary: Get a user
+      description: Retrieve a user by ID. Requires users:read. CONFIRMED.
+      responses:
+        '200':
+          description: The requested user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateUser
+      tags:
+      - Users
+      summary: Update a user
+      description: Update a user record. Requires users:write. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: The updated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      operationId: deactivateUser
+      tags:
+      - Users
+      summary: Deactivate a user
+      description: Soft-delete (deactivate) a user account. Requires users:delete. CONFIRMED.
+      responses:
+        '200':
+          description: Deactivation confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
+    UserInput:
+      type: object
+      required:
+      - email
+      properties:
+        email:
+          type: string
+          format: email
+        givenName:
+          type: string
+        familyName:
+          type: string
+        employeeId:
+          type: string
+        department:
+          type: string
+        costCenter:
+          type: string
+        managerEmail:
+          type: string
+          format: email
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - deactivated
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: The user identifier.
+      schema:
+        type: string
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client-credentials flow. Generate a client_id / client_secret in the Navan app under Settings > Integrations (API), then POST grant_type=client_credentials to the token URL to obtain a Bearer access token. US token URL: https://app.navan.com/ta-auth/oauth/token ; EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some integrations reference an https://api.navan.com/ta-auth/oauth/token or /auth/v1/token variant; confirm the current token URL in the Navan developer portal.)'
+      flows:
+        clientCredentials:
+          tokenUrl: https://app.navan.com/ta-auth/oauth/token
+          scopes:
+            bookings:read: Read booking (trip) data.
+            users:read: Read user profiles.
+            users:write: Create and modify users.
+            users:delete: Deactivate users.
+            liquid:read: Read expense data (transactions, fees, receipts, custom fields).
+            liquid:write: Update expense data.

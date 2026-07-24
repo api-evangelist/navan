@@ -1,0 +1,214 @@
+openapi: 3.0.3
+info:
+  title: Navan Bookings Custom Fields API
+  description: 'The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform. It is a REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant. Administrators generate a client_id / client_secret in the Navan app under Settings > Integrations (API), exchange them for a Bearer access token, and call the API with `Authorization: Bearer <token>`. Access is scoped (e.g. bookings:read, users:read, users:write, users:delete, and the expense read/write scopes).
+
+
+    Endpoint status: the Expense API paths (transactions, fees, adjustments, receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against Navan''s published API reference and third-party integration guides. The Bookings and Webhook subscription-management paths are MODELED - the relevant scopes and capabilities are documented by Navan, but the exact request paths are behind a gated reference and are represented here as a best-effort model. Modeled operations are flagged with `x-endpoint-status: modeled`.'
+  version: '1.0'
+  contact:
+    name: Navan Developers
+    url: https://developer.navan.com/
+  x-rebrand-note: Navan was known as TripActions until its February 2022 rebrand to Navan; some legacy hostnames and token paths still carry a `ta-` (TripActions) prefix, e.g. the `ta-auth` OAuth token path.
+servers:
+- url: https://api.navan.com
+  description: Navan API (US / global)
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Custom Fields
+  description: Company custom fields used for cost-center / GL coding. CONFIRMED.
+paths:
+  /v1/expense/custom-fields:
+    get:
+      operationId: listCustomFields
+      tags:
+      - Custom Fields
+      summary: List custom fields
+      description: List all company custom fields. CONFIRMED.
+      responses:
+        '200':
+          description: A list of custom fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomField'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/custom-fields/{fieldName}:
+    parameters:
+    - $ref: '#/components/parameters/FieldName'
+    get:
+      operationId: getCustomField
+      tags:
+      - Custom Fields
+      summary: Get a custom field
+      description: Retrieve a single custom field definition by name. CONFIRMED.
+      responses:
+        '200':
+          description: The requested custom field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomField'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/custom-fields/{fieldName}/options:
+    parameters:
+    - $ref: '#/components/parameters/FieldName'
+    post:
+      operationId: manageCustomFieldOptions
+      tags:
+      - Custom Fields
+      summary: Batch manage custom field options
+      description: Batch-create or update the options (values) available on a custom field. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomFieldOptionsInput'
+      responses:
+        '200':
+          description: Job accepted (may run asynchronously).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/expense/custom-fields/jobs/{job_id}:
+    parameters:
+    - name: job_id
+      in: path
+      required: true
+      description: The asynchronous job ID returned by an options-management request.
+      schema:
+        type: string
+    get:
+      operationId: getCustomFieldJob
+      tags:
+      - Custom Fields
+      summary: Get custom field job status
+      description: Poll the status of an asynchronous custom-field options job. CONFIRMED.
+      responses:
+        '200':
+          description: Job status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    CustomFieldOptionsInput:
+      type: object
+      required:
+      - options
+      properties:
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              action:
+                type: string
+                enum:
+                - add
+                - update
+                - remove
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+    CustomField:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+  parameters:
+    FieldName:
+      name: fieldName
+      in: path
+      required: true
+      description: The custom field name.
+      schema:
+        type: string
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client-credentials flow. Generate a client_id / client_secret in the Navan app under Settings > Integrations (API), then POST grant_type=client_credentials to the token URL to obtain a Bearer access token. US token URL: https://app.navan.com/ta-auth/oauth/token ; EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some integrations reference an https://api.navan.com/ta-auth/oauth/token or /auth/v1/token variant; confirm the current token URL in the Navan developer portal.)'
+      flows:
+        clientCredentials:
+          tokenUrl: https://app.navan.com/ta-auth/oauth/token
+          scopes:
+            bookings:read: Read booking (trip) data.
+            users:read: Read user profiles.
+            users:write: Create and modify users.
+            users:delete: Deactivate users.
+            liquid:read: Read expense data (transactions, fees, receipts, custom fields).
+            liquid:write: Update expense data.
