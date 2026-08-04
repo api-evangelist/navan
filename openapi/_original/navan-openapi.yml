@@ -1,0 +1,974 @@
+openapi: 3.0.3
+info:
+  title: Navan API
+  description: >-
+    The Navan API is the public developer surface for the Navan (formerly
+    TripActions) corporate travel, expense, and corporate card platform. It is a
+    REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant.
+    Administrators generate a client_id / client_secret in the Navan app under
+    Settings > Integrations (API), exchange them for a Bearer access token, and
+    call the API with `Authorization: Bearer <token>`. Access is scoped
+    (e.g. bookings:read, users:read, users:write, users:delete, and the expense
+    read/write scopes).
+
+
+    Endpoint status: the Expense API paths (transactions, fees, adjustments,
+    receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against
+    Navan's published API reference and third-party integration guides. The
+    Bookings and Webhook subscription-management paths are MODELED - the relevant
+    scopes and capabilities are documented by Navan, but the exact request paths
+    are behind a gated reference and are represented here as a best-effort model.
+    Modeled operations are flagged with `x-endpoint-status: modeled`.
+  version: '1.0'
+  contact:
+    name: Navan Developers
+    url: https://developer.navan.com/
+  x-rebrand-note: >-
+    Navan was known as TripActions until its February 2022 rebrand to Navan;
+    some legacy hostnames and token paths still carry a `ta-` (TripActions)
+    prefix, e.g. the `ta-auth` OAuth token path.
+servers:
+  - url: https://api.navan.com
+    description: Navan API (US / global)
+security:
+  - oauth2ClientCredentials: []
+tags:
+  - name: Transactions
+    description: Expense transactions across Navan card, Connect, manual, and repayment types. CONFIRMED.
+  - name: Fees and Adjustments
+    description: Fees, credit/debit adjustments, daily rebates, and disputes. CONFIRMED.
+  - name: Receipts
+    description: Receipt URLs and downloads for expense transactions. CONFIRMED.
+  - name: Custom Fields
+    description: Company custom fields used for cost-center / GL coding. CONFIRMED.
+  - name: Users
+    description: User provisioning and lifecycle under travel/v1. CONFIRMED.
+  - name: Bookings
+    description: Booking (trip) records for downstream reporting. MODELED.
+  - name: Webhooks
+    description: Webhook subscription management for change notifications. MODELED.
+paths:
+  # ---------------- Transactions (CONFIRMED) ----------------
+  /v1/expense/transactions:
+    get:
+      operationId: listTransactions
+      tags: [Transactions]
+      summary: List transactions
+      description: Generic multi-type retrieval of expense transactions. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      operationId: updateTransactions
+      tags: [Transactions]
+      summary: Batch update transactions
+      description: Batch-update a set of transactions (for example custom-field coding). CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionBatchUpdate'
+      responses:
+        '200':
+          description: Update result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/expense/transactions/{id}:
+    parameters:
+      - $ref: '#/components/parameters/TransactionId'
+    get:
+      operationId: getTransaction
+      tags: [Transactions]
+      summary: Get a transaction
+      description: Retrieve a single transaction by its ID. CONFIRMED.
+      responses:
+        '200':
+          description: The requested transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/card-transactions:
+    get:
+      operationId: listCardTransactions
+      tags: [Transactions]
+      summary: List Navan card transactions
+      description: Retrieve transactions made on Navan-issued corporate cards. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of card transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/connect-transactions:
+    get:
+      operationId: listConnectTransactions
+      tags: [Transactions]
+      summary: List Connect card transactions
+      description: Retrieve transactions from Navan Connect external card integrations. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of Connect transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/manual-transactions:
+    get:
+      operationId: listManualTransactions
+      tags: [Transactions]
+      summary: List manual transactions
+      description: Retrieve manual submissions and payroll transactions. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of manual transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/repayments:
+    get:
+      operationId: listRepayments
+      tags: [Transactions]
+      summary: List repayments
+      description: Retrieve user repayment transactions. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of repayments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  # ---------------- Fees and Adjustments (CONFIRMED) ----------------
+  /v1/expense/fees:
+    get:
+      operationId: listFees
+      tags: [Fees and Adjustments]
+      summary: List fees
+      description: Retrieve direct-reimbursement, FX, and platform fees. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+      responses:
+        '200':
+          description: A page of fees.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/adjustments:
+    get:
+      operationId: listAdjustments
+      tags: [Fees and Adjustments]
+      summary: List adjustments
+      description: Retrieve credit and debit memo adjustments. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+      responses:
+        '200':
+          description: A page of adjustments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/daily-rebates:
+    get:
+      operationId: listDailyRebates
+      tags: [Fees and Adjustments]
+      summary: List daily rebates
+      description: Retrieve daily rebate transactions. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+      responses:
+        '200':
+          description: A page of daily rebates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/disputes:
+    get:
+      operationId: listDisputes
+      tags: [Fees and Adjustments]
+      summary: List disputes
+      description: Retrieve dispute transactions. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+      responses:
+        '200':
+          description: A page of disputes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  # ---------------- Receipts (CONFIRMED) ----------------
+  /v1/expense/transactions/{id}/receipt:
+    parameters:
+      - $ref: '#/components/parameters/TransactionId'
+    get:
+      operationId: getTransactionReceipt
+      tags: [Receipts]
+      summary: Get receipt URLs for a transaction
+      description: Retrieve receipt image URLs for a given transaction. CONFIRMED.
+      responses:
+        '200':
+          description: Receipt URLs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/transactions/{id}/receipt/download:
+    parameters:
+      - $ref: '#/components/parameters/TransactionId'
+    get:
+      operationId: downloadTransactionReceipt
+      tags: [Receipts]
+      summary: Download a transaction receipt
+      description: Follow a redirect to download the receipt file for a transaction. CONFIRMED.
+      responses:
+        '302':
+          description: Redirect to the receipt file.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/transactions/receipts:
+    get:
+      operationId: listReceipts
+      tags: [Receipts]
+      summary: Batch list receipt URLs
+      description: Batch-fetch receipt URLs across transactions filtered by date. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+      responses:
+        '200':
+          description: Receipt URLs across transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  # ---------------- Custom Fields (CONFIRMED) ----------------
+  /v1/expense/custom-fields:
+    get:
+      operationId: listCustomFields
+      tags: [Custom Fields]
+      summary: List custom fields
+      description: List all company custom fields. CONFIRMED.
+      responses:
+        '200':
+          description: A list of custom fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomField'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/expense/custom-fields/{fieldName}:
+    parameters:
+      - $ref: '#/components/parameters/FieldName'
+    get:
+      operationId: getCustomField
+      tags: [Custom Fields]
+      summary: Get a custom field
+      description: Retrieve a single custom field definition by name. CONFIRMED.
+      responses:
+        '200':
+          description: The requested custom field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomField'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/expense/custom-fields/{fieldName}/options:
+    parameters:
+      - $ref: '#/components/parameters/FieldName'
+    post:
+      operationId: manageCustomFieldOptions
+      tags: [Custom Fields]
+      summary: Batch manage custom field options
+      description: Batch-create or update the options (values) available on a custom field. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomFieldOptionsInput'
+      responses:
+        '200':
+          description: Job accepted (may run asynchronously).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/expense/custom-fields/jobs/{job_id}:
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        description: The asynchronous job ID returned by an options-management request.
+        schema:
+          type: string
+    get:
+      operationId: getCustomFieldJob
+      tags: [Custom Fields]
+      summary: Get custom field job status
+      description: Poll the status of an asynchronous custom-field options job. CONFIRMED.
+      responses:
+        '200':
+          description: Job status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  # ---------------- Users (CONFIRMED) ----------------
+  /travel/v1/users:
+    get:
+      operationId: listUsers
+      tags: [Users]
+      summary: List users
+      description: List users with cursor-based pagination. Requires users:read. CONFIRMED.
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createUser
+      tags: [Users]
+      summary: Create a user
+      description: Create a new user. Requires users:write. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: The created user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /travel/v1/users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getUser
+      tags: [Users]
+      summary: Get a user
+      description: Retrieve a user by ID. Requires users:read. CONFIRMED.
+      responses:
+        '200':
+          description: The requested user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateUser
+      tags: [Users]
+      summary: Update a user
+      description: Update a user record. Requires users:write. CONFIRMED.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: The updated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      operationId: deactivateUser
+      tags: [Users]
+      summary: Deactivate a user
+      description: Soft-delete (deactivate) a user account. Requires users:delete. CONFIRMED.
+      responses:
+        '200':
+          description: Deactivation confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  # ---------------- Bookings (MODELED) ----------------
+  /travel/v1/bookings:
+    get:
+      operationId: listBookings
+      tags: [Bookings]
+      summary: List bookings
+      description: >-
+        List booking (trip) records for downstream reporting and ERP transfer.
+        The bookings:read scope is confirmed; the path and query parameters are
+        MODELED from Navan's booking-data integration documentation.
+      x-endpoint-status: modeled
+      parameters:
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of bookings.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /travel/v1/bookings/{bookingId}:
+    parameters:
+      - name: bookingId
+        in: path
+        required: true
+        description: The booking (trip) identifier.
+        schema:
+          type: string
+    get:
+      operationId: getBooking
+      tags: [Bookings]
+      summary: Get a booking
+      description: >-
+        Retrieve a single booking by ID. MODELED - path inferred from the
+        booking-data integration surface; verify against the gated reference.
+      x-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested booking.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  # ---------------- Webhooks (MODELED) ----------------
+  /v1/expense/webhooks:
+    get:
+      operationId: listWebhooks
+      tags: [Webhooks]
+      summary: List webhook subscriptions
+      description: >-
+        List configured webhook subscriptions. Navan documents webhooks as a
+        first-class Expense API feature; the subscription-management path is
+        MODELED because the detailed reference is gated.
+      x-endpoint-status: modeled
+      responses:
+        '200':
+          description: A list of webhook subscriptions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createWebhook
+      tags: [Webhooks]
+      summary: Create a webhook subscription
+      description: Register a webhook endpoint to receive change notifications. MODELED.
+      x-endpoint-status: modeled
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookInput'
+      responses:
+        '200':
+          description: The created webhook subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/expense/webhooks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The webhook subscription ID.
+        schema:
+          type: string
+    get:
+      operationId: getWebhook
+      tags: [Webhooks]
+      summary: Get a webhook subscription
+      description: Retrieve a webhook subscription by ID. MODELED.
+      x-endpoint-status: modeled
+      responses:
+        '200':
+          description: The requested webhook subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteWebhook
+      tags: [Webhooks]
+      summary: Delete a webhook subscription
+      description: Delete a webhook subscription. MODELED.
+      x-endpoint-status: modeled
+      responses:
+        '200':
+          description: Deletion confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: >-
+        OAuth 2.0 client-credentials flow. Generate a client_id / client_secret
+        in the Navan app under Settings > Integrations (API), then POST
+        grant_type=client_credentials to the token URL to obtain a Bearer access
+        token. US token URL: https://app.navan.com/ta-auth/oauth/token ;
+        EU token URL: https://app-fra.navan.com/ta-auth/oauth/token . (Some
+        integrations reference an https://api.navan.com/ta-auth/oauth/token or
+        /auth/v1/token variant; confirm the current token URL in the Navan
+        developer portal.)
+      flows:
+        clientCredentials:
+          tokenUrl: https://app.navan.com/ta-auth/oauth/token
+          scopes:
+            bookings:read: Read booking (trip) data.
+            users:read: Read user profiles.
+            users:write: Create and modify users.
+            users:delete: Deactivate users.
+            liquid:read: Read expense data (transactions, fees, receipts, custom fields).
+            liquid:write: Update expense data.
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
+    FieldName:
+      name: fieldName
+      in: path
+      required: true
+      description: The custom field name.
+      schema:
+        type: string
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: The user identifier.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: The transaction type (card, connect, manual, repayment, fee, adjustment, rebate, dispute).
+        status:
+          type: string
+        merchant:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        date:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type: string
+          nullable: true
+    TransactionBatchUpdate:
+      type: object
+      required:
+        - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              customFieldValues:
+                type: object
+                additionalProperties: true
+    Receipt:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        url:
+          type: string
+          format: uri
+        fileName:
+          type: string
+        contentType:
+          type: string
+    ReceiptList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receipt'
+    CustomField:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+    CustomFieldOptionsInput:
+      type: object
+      required:
+        - options
+      properties:
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              action:
+                type: string
+                enum:
+                  - add
+                  - update
+                  - remove
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - running
+            - completed
+            - failed
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserInput'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum:
+                - active
+                - deactivated
+    UserInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+        givenName:
+          type: string
+        familyName:
+          type: string
+        employeeId:
+          type: string
+        department:
+          type: string
+        costCenter:
+          type: string
+        managerEmail:
+          type: string
+          format: email
+    Booking:
+      type: object
+      description: A booking (trip) record. MODELED schema.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - flight
+            - hotel
+            - car
+            - rail
+        travelerId:
+          type: string
+        status:
+          type: string
+        totalAmount:
+          type: number
+        currency:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    Webhook:
+      allOf:
+        - $ref: '#/components/schemas/WebhookInput'
+        - type: object
+          properties:
+            id:
+              type: string
+    WebhookInput:
+      type: object
+      required:
+        - url
+        - events
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        secret:
+          type: string
+          description: Signing secret used to verify webhook payload authenticity.

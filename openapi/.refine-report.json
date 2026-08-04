@@ -1,0 +1,26 @@
+{
+  "provider": "navan",
+  "sources": [
+    "navan-bookings-api-openapi.yml",
+    "navan-custom-fields-api-openapi.yml",
+    "navan-fees-and-adjustments-api-openapi.yml",
+    "navan-receipts-api-openapi.yml",
+    "navan-transactions-api-openapi.yml",
+    "navan-users-api-openapi.yml",
+    "navan-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "navan-bookings-api-openapi.yml",
+    "navan-custom-fields-api-openapi.yml",
+    "navan-fees-and-adjustments-api-openapi.yml",
+    "navan-receipts-api-openapi.yml",
+    "navan-transactions-api-openapi.yml",
+    "navan-users-api-openapi.yml",
+    "navan-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
