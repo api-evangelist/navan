@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Navan Bookings Fees and Adjustments API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://app.navan.com/ta-auth/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Fees and Adjustments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List fees",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/fees",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              }
+            ]
+          },
+          "docs": "Retrieve direct-reimbursement, FX, and platform fees. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List adjustments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/adjustments",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              }
+            ]
+          },
+          "docs": "Retrieve credit and debit memo adjustments. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List daily rebates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/daily-rebates",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              }
+            ]
+          },
+          "docs": "Retrieve daily rebate transactions. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List disputes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/disputes",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              }
+            ]
+          },
+          "docs": "Retrieve dispute transactions. CONFIRMED."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

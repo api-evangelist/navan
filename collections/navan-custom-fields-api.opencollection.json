@@ -1,0 +1,101 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Navan Bookings Custom Fields API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://app.navan.com/ta-auth/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List custom fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/custom-fields"
+          },
+          "docs": "List all company custom fields. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "Get a custom field",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/custom-fields/:fieldName",
+            "params": [
+              {
+                "name": "fieldName",
+                "value": "",
+                "type": "path",
+                "description": "The custom field name."
+              }
+            ]
+          },
+          "docs": "Retrieve a single custom field definition by name. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "Batch manage custom field options",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.navan.com/v1/expense/custom-fields/:fieldName/options",
+            "params": [
+              {
+                "name": "fieldName",
+                "value": "",
+                "type": "path",
+                "description": "The custom field name."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Batch-create or update the options (values) available on a custom field. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "Get custom field job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/custom-fields/jobs/:job_id",
+            "params": [
+              {
+                "name": "job_id",
+                "value": "",
+                "type": "path",
+                "description": "The asynchronous job ID returned by an options-management request."
+              }
+            ]
+          },
+          "docs": "Poll the status of an asynchronous custom-field options job. CONFIRMED."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

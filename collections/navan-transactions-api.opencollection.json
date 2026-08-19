@@ -1,0 +1,224 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Navan Bookings Transactions API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://app.navan.com/ta-auth/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/transactions",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for pagination."
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              }
+            ]
+          },
+          "docs": "Generic multi-type retrieval of expense transactions. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "Batch update transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.navan.com/v1/expense/transactions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Batch-update a set of transactions (for example custom-field coding). CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "Get a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/transactions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction identifier."
+              }
+            ]
+          },
+          "docs": "Retrieve a single transaction by its ID. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List Navan card transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/card-transactions",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for pagination."
+              }
+            ]
+          },
+          "docs": "Retrieve transactions made on Navan-issued corporate cards. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List Connect card transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/connect-transactions",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for pagination."
+              }
+            ]
+          },
+          "docs": "Retrieve transactions from Navan Connect external card integrations. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List manual transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/manual-transactions",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for pagination."
+              }
+            ]
+          },
+          "docs": "Retrieve manual submissions and payroll transactions. CONFIRMED."
+        },
+        {
+          "info": {
+            "name": "List repayments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.navan.com/v1/expense/repayments",
+            "params": [
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the date range filter (ISO 8601)."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for pagination."
+              }
+            ]
+          },
+          "docs": "Retrieve user repayment transactions. CONFIRMED."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
