@@ -127,6 +127,8 @@ apis:
   humanURL: https://developer.navan.com/api/
   baseURL: https://api.navan.com/v1/expense
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -148,6 +150,8 @@ apis:
   humanURL: https://developer.navan.com/api/
   baseURL: https://api.navan.com/v1/expense
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -169,6 +173,8 @@ apis:
   humanURL: https://developer.navan.com/api/
   baseURL: https://api.navan.com/v1/expense
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
