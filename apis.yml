@@ -11,6 +11,18 @@ description: Navan (formerly TripActions, rebranded to Navan in February 2022) i
   server for connecting AI assistants to Navan data. Booking (travel) is offered at
   no platform cost and funded by supplier commissions and per-trip fees, while
   Expense is a per-user subscription.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
