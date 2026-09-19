@@ -55,6 +55,8 @@ apis:
   humanURL: https://developer.navan.com/api/
   baseURL: https://api.navan.com/v1/expense
   tags:
+  - Booking
+  tags_raw:
   - Bookings
   properties:
   - type: OpenAPI
