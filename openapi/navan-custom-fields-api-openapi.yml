@@ -1,10 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Navan Bookings Custom Fields API
-  description: 'The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform. It is a REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant. Administrators generate a client_id / client_secret in the Navan app under Settings > Integrations (API), exchange them for a Bearer access token, and call the API with `Authorization: Bearer <token>`. Access is scoped (e.g. bookings:read, users:read, users:write, users:delete, and the expense read/write scopes).
-
-
-    Endpoint status: the Expense API paths (transactions, fees, adjustments, receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against Navan''s published API reference and third-party integration guides. The Bookings and Webhook subscription-management paths are MODELED - the relevant scopes and capabilities are documented by Navan, but the exact request paths are behind a gated reference and are represented here as a best-effort model. Modeled operations are flagged with `x-endpoint-status: modeled`.'
+  title: Navan Custom Fields API
+  description: The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform.
   version: '1.0'
   contact:
     name: Navan Developers
@@ -112,26 +109,47 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    CustomField:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
     CustomFieldOptionsInput:
       type: object
       required:
@@ -150,46 +168,25 @@ components:
                 - add
                 - update
                 - remove
-    Job:
-      type: object
-      properties:
-        job_id:
-          type: string
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-    CustomField:
-      type: object
-      properties:
-        name:
-          type: string
-        label:
-          type: string
-        type:
-          type: string
-        required:
-          type: boolean
-        options:
-          type: array
-          items:
-            type: string
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     FieldName:
       name: fieldName

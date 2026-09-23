@@ -1,10 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Navan Bookings Users API
-  description: 'The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform. It is a REST/HTTPS API secured with OAuth 2.0 using the client-credentials grant. Administrators generate a client_id / client_secret in the Navan app under Settings > Integrations (API), exchange them for a Bearer access token, and call the API with `Authorization: Bearer <token>`. Access is scoped (e.g. bookings:read, users:read, users:write, users:delete, and the expense read/write scopes).
-
-
-    Endpoint status: the Expense API paths (transactions, fees, adjustments, receipts, custom fields) and the travel/v1 Users paths are CONFIRMED against Navan''s published API reference and third-party integration guides. The Bookings and Webhook subscription-management paths are MODELED - the relevant scopes and capabilities are documented by Navan, but the exact request paths are behind a gated reference and are represented here as a best-effort model. Modeled operations are flagged with `x-endpoint-status: modeled`.'
+  title: Navan Users API
+  description: The Navan API is the public developer surface for the Navan (formerly TripActions) corporate travel, expense, and corporate card platform.
   version: '1.0'
   contact:
     name: Navan Developers
@@ -42,8 +39,9 @@ paths:
                     items:
                       $ref: '#/components/schemas/User'
                   next_cursor:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
@@ -132,33 +130,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    DeleteResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deactivated:
-          type: boolean
     UserInput:
       type: object
       required:
@@ -180,18 +152,6 @@ components:
         managerEmail:
           type: string
           format: email
-    User:
-      allOf:
-      - $ref: '#/components/schemas/UserInput'
-      - type: object
-        properties:
-          id:
-            type: string
-          status:
-            type: string
-            enum:
-            - active
-            - deactivated
     Error:
       type: object
       properties:
@@ -205,12 +165,57 @@ components:
             details:
               type: object
               additionalProperties: true
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - deactivated
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
+  responses:
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     Cursor:
       name: cursor
       in: query
       required: false
       description: Opaque cursor for pagination.
+      schema:
+        type: string
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: The user identifier.
       schema:
         type: string
     PageSize:
@@ -220,13 +225,6 @@ components:
       description: Maximum number of records to return per page.
       schema:
         type: integer
-    UserId:
-      name: userId
-      in: path
-      required: true
-      description: The user identifier.
-      schema:
-        type: string
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

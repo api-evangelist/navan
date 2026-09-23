@@ -1,13 +1,7 @@
 {
   "provider": "navan",
   "sources": [
-    "navan-bookings-api-openapi.yml",
-    "navan-custom-fields-api-openapi.yml",
-    "navan-fees-and-adjustments-api-openapi.yml",
-    "navan-receipts-api-openapi.yml",
-    "navan-transactions-api-openapi.yml",
-    "navan-users-api-openapi.yml",
-    "navan-webhooks-api-openapi.yml"
+    "_original/navan-openapi.yml"
   ],
   "outputs": [
     "navan-bookings-api-openapi.yml",
@@ -21,6 +15,18 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "navan-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "navan-bookings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-custom-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-fees-and-adjustments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-receipts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "navan-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
