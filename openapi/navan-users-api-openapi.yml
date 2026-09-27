@@ -130,7 +130,41 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: The user identifier.
+      schema:
+        type: string
   schemas:
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - deactivated
     UserInput:
       type: object
       required:
@@ -152,6 +186,13 @@ components:
         managerEmail:
           type: string
           format: email
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
     Error:
       type: object
       properties:
@@ -165,32 +206,7 @@ components:
             details:
               type: object
               additionalProperties: true
-    User:
-      allOf:
-      - $ref: '#/components/schemas/UserInput'
-      - type: object
-        properties:
-          id:
-            type: string
-          status:
-            type: string
-            enum:
-            - active
-            - deactivated
-    DeleteResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deactivated:
-          type: boolean
   responses:
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: The requested resource was not found.
       content:
@@ -203,28 +219,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
-    UserId:
-      name: userId
-      in: path
-      required: true
-      description: The user identifier.
-      schema:
-        type: string
-    PageSize:
-      name: page_size
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

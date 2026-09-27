@@ -186,19 +186,6 @@ components:
         customFieldValues:
           type: object
           additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
     TransactionBatchUpdate:
       type: object
       required:
@@ -225,26 +212,27 @@ components:
           type:
           - string
           - 'null'
-  responses:
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
   parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
     ToDate:
       name: to
       in: query
@@ -261,20 +249,6 @@ components:
       schema:
         type: string
         format: date-time
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The transaction identifier.
-      schema:
-        type: string
     PageSize:
       name: page_size
       in: query
@@ -282,6 +256,32 @@ components:
       description: Maximum number of records to return per page.
       schema:
         type: integer
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

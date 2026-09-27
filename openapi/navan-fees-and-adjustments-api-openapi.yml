@@ -118,6 +118,17 @@ components:
         customFieldValues:
           type: object
           additionalProperties: true
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type:
+          - string
+          - 'null'
     Error:
       type: object
       properties:
@@ -131,17 +142,6 @@ components:
             details:
               type: object
               additionalProperties: true
-    TransactionList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-        next_cursor:
-          type:
-          - string
-          - 'null'
   responses:
     Unauthorized:
       description: Missing or invalid access token, or insufficient scope.
