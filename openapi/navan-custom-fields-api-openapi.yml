@@ -109,7 +109,38 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
     CustomField:
       type: object
       properties:
@@ -143,18 +174,6 @@ components:
                 - add
                 - update
                 - remove
-    Job:
-      type: object
-      properties:
-        job_id:
-          type: string
-        status:
-          type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
     Error:
       type: object
       properties:
@@ -168,25 +187,6 @@ components:
             details:
               type: object
               additionalProperties: true
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     FieldName:
       name: fieldName

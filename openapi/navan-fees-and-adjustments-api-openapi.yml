@@ -93,6 +93,23 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  parameters:
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
   schemas:
     Transaction:
       type: object
@@ -118,17 +135,6 @@ components:
         customFieldValues:
           type: object
           additionalProperties: true
-    TransactionList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-        next_cursor:
-          type:
-          - string
-          - 'null'
     Error:
       type: object
       properties:
@@ -142,6 +148,17 @@ components:
             details:
               type: object
               additionalProperties: true
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type:
+          - string
+          - 'null'
   responses:
     Unauthorized:
       description: Missing or invalid access token, or insufficient scope.
@@ -149,23 +166,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

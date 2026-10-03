@@ -73,6 +73,25 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Receipt:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        url:
+          type: string
+          format: uri
+        fileName:
+          type: string
+        contentType:
+          type: string
+    ReceiptList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receipt'
     Error:
       type: object
       properties:
@@ -86,47 +105,7 @@ components:
             details:
               type: object
               additionalProperties: true
-    ReceiptList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Receipt'
-    Receipt:
-      type: object
-      properties:
-        transactionId:
-          type: string
-        url:
-          type: string
-          format: uri
-        fileName:
-          type: string
-        contentType:
-          type: string
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
     FromDate:
       name: from
       in: query
@@ -142,6 +121,27 @@ components:
       description: The transaction identifier.
       schema:
         type: string
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

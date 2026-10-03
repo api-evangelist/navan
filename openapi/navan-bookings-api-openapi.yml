@@ -73,30 +73,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   schemas:
     Booking:
       type: object
@@ -141,6 +117,30 @@ components:
             details:
               type: object
               additionalProperties: true
+  parameters:
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
   responses:
     NotFound:
       description: The requested resource was not found.
