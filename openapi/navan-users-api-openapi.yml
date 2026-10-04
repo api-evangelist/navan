@@ -130,6 +130,28 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: The user identifier.
+      schema:
+        type: string
   responses:
     ValidationError:
       description: The request payload failed validation.
@@ -149,36 +171,19 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    PageSize:
-      name: page_size
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
-    UserId:
-      name: userId
-      in: path
-      required: true
-      description: The user identifier.
-      schema:
-        type: string
   schemas:
-    DeleteResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deactivated:
-          type: boolean
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - deactivated
     Error:
       type: object
       properties:
@@ -192,6 +197,13 @@ components:
             details:
               type: object
               additionalProperties: true
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
     UserInput:
       type: object
       required:
@@ -213,18 +225,6 @@ components:
         managerEmail:
           type: string
           format: email
-    User:
-      allOf:
-      - $ref: '#/components/schemas/UserInput'
-      - type: object
-        properties:
-          id:
-            type: string
-          status:
-            type: string
-            enum:
-            - active
-            - deactivated
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

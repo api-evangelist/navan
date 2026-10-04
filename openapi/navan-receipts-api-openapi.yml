@@ -72,63 +72,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  schemas:
-    Receipt:
-      type: object
-      properties:
-        transactionId:
-          type: string
-        url:
-          type: string
-          format: uri
-        fileName:
-          type: string
-        contentType:
-          type: string
-    ReceiptList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Receipt'
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-  parameters:
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The transaction identifier.
-      schema:
-        type: string
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   responses:
     NotFound:
       description: The requested resource was not found.
@@ -142,6 +85,63 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    ReceiptList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receipt'
+    Receipt:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        url:
+          type: string
+          format: uri
+        fileName:
+          type: string
+        contentType:
+          type: string
+  parameters:
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

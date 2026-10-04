@@ -161,6 +161,44 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
   responses:
     ValidationError:
       description: The request payload failed validation.
@@ -180,45 +218,46 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    PageSize:
-      name: page_size
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The transaction identifier.
-      schema:
-        type: string
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   schemas:
+    TransactionBatchUpdate:
+      type: object
+      required:
+      - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              customFieldValues:
+                type: object
+                additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type:
+          - string
+          - 'null'
     Transaction:
       type: object
       properties:
@@ -243,45 +282,6 @@ components:
         customFieldValues:
           type: object
           additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-    TransactionBatchUpdate:
-      type: object
-      required:
-      - transactions
-      properties:
-        transactions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              customFieldValues:
-                type: object
-                additionalProperties: true
-    TransactionList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-        next_cursor:
-          type:
-          - string
-          - 'null'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

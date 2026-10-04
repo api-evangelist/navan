@@ -93,48 +93,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  parameters:
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   schemas:
-    Transaction:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          description: The transaction type (card, connect, manual, repayment, fee, adjustment, rebate, dispute).
-        status:
-          type: string
-        merchant:
-          type: string
-        amount:
-          type: number
-        currency:
-          type: string
-        date:
-          type: string
-          format: date-time
-        userId:
-          type: string
-        customFieldValues:
-          type: object
-          additionalProperties: true
     Error:
       type: object
       properties:
@@ -159,6 +118,47 @@ components:
           type:
           - string
           - 'null'
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: The transaction type (card, connect, manual, repayment, fee, adjustment, rebate, dispute).
+        status:
+          type: string
+        merchant:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        date:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+  parameters:
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
   responses:
     Unauthorized:
       description: Missing or invalid access token, or insufficient scope.
