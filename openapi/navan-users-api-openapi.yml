@@ -131,13 +131,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor for pagination.
-      schema:
-        type: string
     PageSize:
       name: page_size
       in: query
@@ -152,13 +145,14 @@ components:
       description: The user identifier.
       schema:
         type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor for pagination.
+      schema:
+        type: string
   responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: The requested resource was not found.
       content:
@@ -171,19 +165,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    User:
-      allOf:
-      - $ref: '#/components/schemas/UserInput'
-      - type: object
-        properties:
-          id:
-            type: string
-          status:
-            type: string
-            enum:
-            - active
-            - deactivated
     Error:
       type: object
       properties:
@@ -225,6 +213,18 @@ components:
         managerEmail:
           type: string
           format: email
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+            enum:
+            - active
+            - deactivated
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

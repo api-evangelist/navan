@@ -162,13 +162,14 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   parameters:
-    Cursor:
-      name: cursor
+    FromDate:
+      name: from
       in: query
       required: false
-      description: Opaque cursor for pagination.
+      description: Start of the date range filter (ISO 8601).
       schema:
         type: string
+        format: date-time
     PageSize:
       name: page_size
       in: query
@@ -191,73 +192,14 @@ components:
       description: The transaction identifier.
       schema:
         type: string
-    FromDate:
-      name: from
+    Cursor:
+      name: cursor
       in: query
       required: false
-      description: Start of the date range filter (ISO 8601).
+      description: Opaque cursor for pagination.
       schema:
         type: string
-        format: date-time
-  responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    TransactionBatchUpdate:
-      type: object
-      required:
-      - transactions
-      properties:
-        transactions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              customFieldValues:
-                type: object
-                additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-              additionalProperties: true
-    TransactionList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Transaction'
-        next_cursor:
-          type:
-          - string
-          - 'null'
     Transaction:
       type: object
       properties:
@@ -282,6 +224,64 @@ components:
         customFieldValues:
           type: object
           additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    TransactionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        next_cursor:
+          type:
+          - string
+          - 'null'
+    TransactionBatchUpdate:
+      type: object
+      required:
+      - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              customFieldValues:
+                type: object
+                additionalProperties: true
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

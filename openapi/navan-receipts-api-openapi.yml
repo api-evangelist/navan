@@ -72,6 +72,30 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  parameters:
+    FromDate:
+      name: from
+      in: query
+      required: false
+      description: Start of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    ToDate:
+      name: to
+      in: query
+      required: false
+      description: End of the date range filter (ISO 8601).
+      schema:
+        type: string
+        format: date-time
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The transaction identifier.
+      schema:
+        type: string
   responses:
     NotFound:
       description: The requested resource was not found.
@@ -118,30 +142,6 @@ components:
           type: string
         contentType:
           type: string
-  parameters:
-    ToDate:
-      name: to
-      in: query
-      required: false
-      description: End of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The transaction identifier.
-      schema:
-        type: string
-    FromDate:
-      name: from
-      in: query
-      required: false
-      description: Start of the date range filter (ISO 8601).
-      schema:
-        type: string
-        format: date-time
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

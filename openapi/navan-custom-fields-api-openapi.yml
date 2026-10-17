@@ -109,33 +109,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid access token, or insufficient scope.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    FieldName:
-      name: fieldName
-      in: path
-      required: true
-      description: The custom field name.
-      schema:
-        type: string
   schemas:
     Job:
       type: object
@@ -162,21 +135,6 @@ components:
             details:
               type: object
               additionalProperties: true
-    CustomField:
-      type: object
-      properties:
-        name:
-          type: string
-        label:
-          type: string
-        type:
-          type: string
-        required:
-          type: boolean
-        options:
-          type: array
-          items:
-            type: string
     CustomFieldOptionsInput:
       type: object
       required:
@@ -195,6 +153,48 @@ components:
                 - add
                 - update
                 - remove
+    CustomField:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    FieldName:
+      name: fieldName
+      in: path
+      required: true
+      description: The custom field name.
+      schema:
+        type: string
   securitySchemes:
     oauth2ClientCredentials:
       type: oauth2

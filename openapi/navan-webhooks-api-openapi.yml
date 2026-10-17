@@ -108,12 +108,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    ValidationError:
-      description: The request payload failed validation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: The requested resource was not found.
       content:
@@ -122,6 +116,12 @@ components:
             $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Missing or invalid access token, or insufficient scope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: The request payload failed validation.
       content:
         application/json:
           schema:
@@ -140,6 +140,13 @@ components:
             details:
               type: object
               additionalProperties: true
+    DeleteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deactivated:
+          type: boolean
     WebhookInput:
       type: object
       required:
@@ -156,13 +163,6 @@ components:
         secret:
           type: string
           description: Signing secret used to verify webhook payload authenticity.
-    DeleteResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deactivated:
-          type: boolean
     Webhook:
       allOf:
       - $ref: '#/components/schemas/WebhookInput'
