@@ -140,3 +140,33 @@
     detected: '2026-10-20'
   status: not-a-workflow
   arazzo: null
+- slug: navan-andreessen-horowitz-a16z
+  label: Andreessen Horowitz (a16z)
+  partner: a16z
+  partner_name: Andreessen Horowitz (a16z)
+  category: vc portfolio participation
+  type: register
+  channel: standard-directory
+  evidence: https://a16z.com/companies/tripactions/
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: a16z portfolio (a16z.com/portfolio/, the page's own data-companies JSON)
+    standard: null
+    spec_file: null
+    role: vc-portfolio-company
+    registered_name: TripActions
+    register_id: https://a16z.com/companies/tripactions/
+    register_country: null
+    register_website: https://navan.com/
+    matched_domain: navan.com
+    matched_by: domain+hand-verified-name
+    signal_note: 'participation only: the venture firm''s own published portfolio lists the company (investment);
+      an ownership and participation record, not conformance or certification'
+    detected_by: sweep-vc-portfolios.py
+    detected: '2026-10-21'
+    year: '2018'
+    status: Exits
+    sector: Cultural Leadership Fund;Enterprise;Growth
+  status: not-a-workflow
+  arazzo: null
