@@ -1,4 +1,4 @@
-# Navan (navan)
+# Navan
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,105 +64,145 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Navan (formerly **TripActions**, rebranded to Navan in February 2022) is a corporate travel, expense, and corporate card management platform. Its public developer surface centers on the **Navan Expense API** - an OAuth 2.0 client-credentials REST API for retrieving and updating transactions, fees, adjustments, receipts, and custom fields - plus a **Travel / User Management API** for provisioning users and reading booking data, and **webhooks** for change notifications. Navan also publishes an **MCP server** for connecting AI assistants to Navan data. The API base is `https://api.navan.com`; access is scoped (e.g. `bookings:read`, `users:read`, `users:write`, `users:delete`, expense read/write).
+Navan (formerly TripActions, rebranded to Navan in February 2022) is a corporate travel, expense, and corporate card management platform. Its public developer surface centers on the Navan Expense API (OAuth 2.0 client-credentials) for retrieving and updating transactions, fees, adjustments, receipts, and custom fields, plus a Travel/User Management API for provisioning users and reading booking data, and webhooks for change notifications. Navan also publishes an MCP server for connecting AI assistants to Navan data. Booking (travel) is offered at no platform cost and funded by supplier commissions and per-trip fees, while Expense is a per-user subscription.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/navan/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/navan/refs/heads/main/apis.yml)
+**Areas:** Corporate Travel · Expense Management · Corporate Cards · Spend Management · T&E · Fintech · Business Travel
 
-## Tags
+## Navan on APIs.io
 
-- Corporate Travel
-- Expense Management
-- Corporate Cards
-- Spend Management
-- T&E
-- Fintech
-- Business Travel
+Everything profiled for Navan is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/navan/](https://apis.io/providers/navan/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (7)
 
-- **Created:** 2026-07-03
-- **Modified:** 2026-07-03
+- [Navan Bookings API](https://apis.io/apis/navan/navan-bookings-api/) — Booking (trip) records for downstream reporting. MODELED.
+- [Navan Custom Fields API](https://apis.io/apis/navan/navan-custom-fields-api/) — Company custom fields used for cost-center / GL coding. CONFIRMED.
+- [Navan Fees and Adjustments API](https://apis.io/apis/navan/navan-fees-and-adjustments-api/) — Fees, credit/debit adjustments, daily rebates, and disputes. CONFIRMED.
+- [Navan Receipts API](https://apis.io/apis/navan/navan-receipts-api/) — Receipt URLs and downloads for expense transactions. CONFIRMED.
+- [Navan Transactions API](https://apis.io/apis/navan/navan-transactions-api/) — Expense transactions across Navan card, Connect, manual, and repayment types. CONFIRMED.
+- [Navan Users API](https://apis.io/apis/navan/navan-users-api/) — User provisioning and lifecycle under travel/v1. CONFIRMED.
+- [Navan Webhooks API](https://apis.io/apis/navan/navan-webhooks-api/) — Webhook subscription management for change notifications. MODELED.
 
-## Authentication
+### Published properties
 
-OAuth 2.0 **client-credentials** flow. An admin generates a `client_id` / `client_secret` in the Navan app under **Settings > Integrations (API)**, then exchanges them for a short-lived Bearer access token at the token URL and calls the API with `Authorization: Bearer <token>`.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-- **US token URL:** `https://app.navan.com/ta-auth/oauth/token`
-- **EU token URL:** `https://app-fra.navan.com/ta-auth/oauth/token`
+#### MCP servers (1)
 
-The `ta-auth` path is a survival of the legacy **TripActions** naming. Different integration guides also reference `https://api.navan.com/ta-auth/oauth/token` and `https://api.navan.com/auth/v1/token` variants - confirm the current token URL in the Navan developer portal.
+Model Context Protocol servers that expose the API to agents.
 
-## APIs
+- [navan](https://apis.io/servers/navan/navan/)
 
-### Navan Expense Transactions API
+#### Agentic access (1)
 
-Retrieve and update expense transactions across Navan card, Connect (external card), manual/payroll, and repayment types, with a generic multi-type list, single-transaction lookup, and batch update. **Endpoints confirmed** against the Navan Expense API reference.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Base URL:** `https://api.navan.com/v1/expense`
-- **Human URL:** [https://developer.navan.com/api/](https://developer.navan.com/api/)
+- [Navan Agentic Access](https://apis.io/agentic-access/navan/navan-agentic-access/)
 
-### Navan Expense Fees and Adjustments API
+#### Collections (8)
 
-Read direct-reimbursement, FX, and platform fees, credit/debit memo adjustments, daily rebates, and dispute transactions. **Endpoints confirmed.**
+Postman and Open Collection request collections.
 
-- **Base URL:** `https://api.navan.com/v1/expense`
+- [Navan API](https://apis.io/collections/navan/open-navan/)
+- [Navan Bookings API](https://apis.io/collections/navan/open-navan-bookings-api/)
+- [Navan Bookings Custom Fields API](https://apis.io/collections/navan/open-navan-custom-fields-api/)
+- [Navan Bookings Fees and Adjustments API](https://apis.io/collections/navan/open-navan-fees-and-adjustments-api/)
+- [Navan Bookings Receipts API](https://apis.io/collections/navan/open-navan-receipts-api/)
+- [Navan Bookings Transactions API](https://apis.io/collections/navan/open-navan-transactions-api/)
+- [Navan Bookings Users API](https://apis.io/collections/navan/open-navan-users-api/)
+- [Navan Bookings Webhooks API](https://apis.io/collections/navan/open-navan-webhooks-api/)
 
-### Navan Expense Receipts API
+#### Security (3)
 
-Retrieve receipt image URLs for a transaction, follow a download redirect, and batch-fetch receipt URLs by date. **Endpoints confirmed.**
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Base URL:** `https://api.navan.com/v1/expense`
+- [Navan Authentication](https://apis.io/security/navan/navan-authentication/)
+- [Navan Domain Security](https://apis.io/security/navan/navan-domain-security/)
+- [Navan Trust Center](https://apis.io/security/navan/navan-trust-center/)
 
-### Navan Expense Custom Fields API
+#### OAuth scopes (1)
 
-List and read company custom fields (Navan's mechanism for cost-center / department / GL coding), batch-manage a field's options, and poll asynchronous jobs. **Endpoints confirmed.**
+The permissions the API asks for.
 
-- **Base URL:** `https://api.navan.com/v1/expense`
+- [Navan Scopes](https://apis.io/scopes/navan/navan-scopes/)
 
-### Navan Users API
+#### Plans and pricing (1)
 
-List, retrieve, create, update, and deactivate users under `travel/v1` with cursor pagination and `users:read` / `users:write` / `users:delete` scopes (deactivation is a soft delete). **Endpoints confirmed** against third-party user-management integration documentation.
+Published plans, tiers and prices.
 
-- **Base URL:** `https://api.navan.com/travel/v1`
+- [Navan Plans Pricing](https://apis.io/plans/navan/navan-plans-pricing/)
 
-### Navan Bookings API
+#### Rate limits (1)
 
-Read booking (trip) records to transfer travel data into downstream ERP, data-warehouse, and reporting systems, mirroring Navan's booking report columns. The `bookings:read` scope is confirmed; the **exact endpoint paths are modeled** because the full reference is gated.
+Published request limits.
 
-- **Base URL:** `https://api.navan.com/travel/v1`
+- [Navan Rate Limits](https://apis.io/rate-limits/navan/navan-rate-limits/)
 
-### Navan Webhooks API
+#### FinOps (1)
 
-Register and manage webhook subscriptions so Navan can POST change notifications to your endpoint. Webhooks are advertised as a first-class Expense API feature; the **subscription-management paths are modeled** because the detailed webhook reference is gated. There is **no public WebSocket API** - server-push is delivered via webhooks.
+What the API costs to run, by operation.
 
-- **Base URL:** `https://api.navan.com/v1/expense`
+- [Navan Finops](https://apis.io/finops/navan/navan-finops/)
 
-## Endpoint Confidence
+## Where to find this API
 
-- **Confirmed** (grounded in Navan's Expense API reference and third-party integration guides): all `v1/expense/*` transaction, fee, adjustment, receipt, and custom-field endpoints, and the `travel/v1/users` endpoints.
-- **Modeled** (capability/scope documented by Navan, exact path inferred behind a gated reference, flagged `x-endpoint-status: modeled` in the OpenAPI): the `travel/v1/bookings` endpoints and the `v1/expense/webhooks` subscription-management endpoints.
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-Navan platform concepts such as departments, cost centers, and travel/spend policies are surfaced primarily through **custom fields** and admin configuration rather than as separate documented public API resources, so they are not modeled as standalone APIs here.
-
-## Pricing
-
-Navan does not publish fixed list pricing. Three commercial motions are commonly referenced: **Business Travel** at no platform fee (funded by supplier commissions and per-trip booking fees), **Business Expense** as a per-user subscription (widely reported around **$15/user/month**, with a small number of users free), and a custom **Enterprise** agreement for unified travel + expense. API access is included with the subscription and is not sold as a separate metered product. See [plans/navan-plans-pricing.yml](plans/navan-plans-pricing.yml).
-
-## Rate Limits
-
-Navan does not publish numeric rate-limit tiers. Handle HTTP 429, use exponential backoff with jitter, honor `Retry-After`, and use cursor pagination with date filters for bulk extraction. See [rate-limits/navan-rate-limits.yml](rate-limits/navan-rate-limits.yml).
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/navan-public)
-- [LinkedIn](https://www.linkedin.com/company/navan)
 - [Website](https://navan.com)
 - [Documentation](https://developer.navan.com/)
-- [Plans](plans/navan-plans-pricing.yml)
-- [Rate Limits](rate-limits/navan-rate-limits.yml)
-- [Fin Ops](finops/navan-finops.yml)
+- [Blog](https://navan.com/blog/rss.xml)
+- [GitHub](https://github.com/navan-public)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 31.1** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 53.2 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 32.1 |
+| Access clarity | 15.8 |
+
+**Agent readiness 34.9** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | negotiable (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.1** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/navan/](https://apis.io/providers/navan/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Navan: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/navan/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
